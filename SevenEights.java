@@ -7,80 +7,83 @@ import java.util.*;
 
 public class SevenEights
 {
+	private Deck deck;
+
 	public static void main(String[] args)
 	{
 		System.out.println("Hi!");
+	}
+
+	public SevenEights()
+	{
+		deck = new Deck();
+	}
+
+	public void game()
+	{
+		// TODO
 	}
 }
 
 class Deck
 {
-	private Card[] cards;
+	private ArrayList<Card> cards;
 
 	public Deck()
 	{
-		cards = new Card[30];
+		cards = new ArrayList<Card>();
 
-		cards[0] = new Card(Suite.Spade, Rank.7);
-		cards[1] = new Card(Suite.Spade, Rank.8);
-		cards[2] = new Card(Suite.Spade, Rank.9);
-		cards[3] = new Card(Suite.Spade, Rank.10);
-		cards[4] = new Card(Suite.Spade, Rank.Jack);
-		cards[5] = new Card(Suite.Spade, Rank.Queen);
-		cards[6] = new Card(Suite.Spade, Rank.King);
-		cards[7] = new Card(Suite.Spade, Rank.Ace);
-		cards[8] = new Card(Suite.Heart, Rank.7);
-		cards[9] = new Card(Suite.Heart, Rank.8);
-		cards[10] = new Card(Suite.Heart, Rank.9);
-		cards[11] = new Card(Suite.Heart, Rank.10);
-		cards[12] = new Card(Suite.Heart, Rank.Jack);
-		cards[13] = new Card(Suite.Heart, Rank.Queen);
-		cards[14] = new Card(Suite.Heart, Rank.King);
-		cards[15] = new Card(Suite.Heart, Rank.Ace);
-		cards[16] = new Card(Suite.Club, Rank.8);
-		cards[17] = new Card(Suite.Club, Rank.9);
-		cards[18] = new Card(Suite.Club, Rank.10);
-		cards[19] = new Card(Suite.Club, Rank.Jack);
-		cards[20] = new Card(Suite.Club, Rank.Queen);
-		cards[21] = new Card(Suite.Club, Rank.King);
-		cards[22] = new Card(Suite.Club, Rank.Ace);
-		cards[23] = new Card(Suite.Diamond, Rank.8);
-		cards[24] = new Card(Suite.Diamond, Rank.9);
-		cards[25] = new Card(Suite.Diamond, Rank.10);
-		cards[26] = new Card(Suite.Diamond, Rank.Jack);
-		cards[27] = new Card(Suite.Diamond, Rank.Queen);
-		cards[28] = new Card(Suite.Diamond, Rank.King);
-		cards[29] = new Card(Suite.Diamond, Rank.Ace);
+		cards.add(new Card(Suite.Spade, Rank.7));
+		cards.add(new Card(Suite.Spade, Rank.8));
+		cards.add(new Card(Suite.Spade, Rank.9));
+		cards.add(new Card(Suite.Spade, Rank.10));
+		cards.add(new Card(Suite.Spade, Rank.Jack));
+		cards.add(new Card(Suite.Spade, Rank.Queen));
+		cards.add(new Card(Suite.Spade, Rank.King));
+		cards.add(new Card(Suite.Spade, Rank.Ace));
+		cards.add(new Card(Suite.Heart, Rank.7));
+		cards.add(new Card(Suite.Heart, Rank.8));
+		cards.add(new Card(Suite.Heart, Rank.9));
+		cards.add(new Card(Suite.Heart, Rank.10));
+		cards.add(new Card(Suite.Heart, Rank.Jack));
+		cards.add(new Card(Suite.Heart, Rank.Queen));
+		cards.add(new Card(Suite.Heart, Rank.King));
+		cards.add(new Card(Suite.Heart, Rank.Ace));
+		cards.add(new Card(Suite.Club, Rank.8));
+		cards.add(new Card(Suite.Club, Rank.9));
+		cards.add(new Card(Suite.Club, Rank.10));
+		cards.add(new Card(Suite.Club, Rank.Jack));
+		cards.add(new Card(Suite.Club, Rank.Queen));
+		cards.add(new Card(Suite.Club, Rank.King));
+		cards.add(new Card(Suite.Club, Rank.Ace));
+		cards.add(new Card(Suite.Diamond, Rank.8));
+		cards.add(new Card(Suite.Diamond, Rank.9));
+		cards.add(new Card(Suite.Diamond, Rank.10));
+		cards.add(new Card(Suite.Diamond, Rank.Jack));
+		cards.add(new Card(Suite.Diamond, Rank.Queen));
+		cards.add(new Card(Suite.Diamond, Rank.King));
+		cards.add(new Card(Suite.Diamond, Rank.Ace));
 
 		shuffle();
 	}
 
 	private void shuffle()
 	{
-		int[][] order = new int[30][2];
+		ArrayList<Card> tempcards = new ArrayList<Card>();
 
-		for(int i = 0; i < 30; i++)
+		while(cards.size() > 0)
 		{
-			order[i][0] = Math.round(Math.random() * 1000000);
-			order[i][1] = i;
+			if (Math.random() < 0.5)
+			{
+				tempcards.add(cards.remove(0));
+			}
+			else
+			{
+				tempcards.add(cards.remove(cards.size - 1));
+			}
 		}
 
-		Arrays.sort(order, new Comparator<double[]>() {
-		    public int compare(double[] card, double[] card) {
-		        double random1 = card[0];
-		        double random2 = card[0];
-		        return random1.compareTo(random2);
-		    }
-		});
-
-		Card[] temp = new Card[30];
-
-		for(int i = 0; i < 30; i++)
-		{
-			temp[i] = cards[order[i][1]];
-		}
-
-		cards = temp;
+		cards = tempcards;
 	}
 }
 
