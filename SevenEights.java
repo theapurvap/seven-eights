@@ -33,32 +33,32 @@ class Deck
 	{
 		cards = new ArrayList<Card>();
 
-		cards.add(new Card(Suite.Spade, Rank.7));
-		cards.add(new Card(Suite.Spade, Rank.8));
-		cards.add(new Card(Suite.Spade, Rank.9));
-		cards.add(new Card(Suite.Spade, Rank.10));
+		cards.add(new Card(Suite.Spade, Rank.Seven));
+		cards.add(new Card(Suite.Spade, Rank.Eight));
+		cards.add(new Card(Suite.Spade, Rank.Nine));
+		cards.add(new Card(Suite.Spade, Rank.Ten));
 		cards.add(new Card(Suite.Spade, Rank.Jack));
 		cards.add(new Card(Suite.Spade, Rank.Queen));
 		cards.add(new Card(Suite.Spade, Rank.King));
 		cards.add(new Card(Suite.Spade, Rank.Ace));
-		cards.add(new Card(Suite.Heart, Rank.7));
-		cards.add(new Card(Suite.Heart, Rank.8));
-		cards.add(new Card(Suite.Heart, Rank.9));
-		cards.add(new Card(Suite.Heart, Rank.10));
+		cards.add(new Card(Suite.Heart, Rank.Seven));
+		cards.add(new Card(Suite.Heart, Rank.Eight));
+		cards.add(new Card(Suite.Heart, Rank.Nine));
+		cards.add(new Card(Suite.Heart, Rank.Ten));
 		cards.add(new Card(Suite.Heart, Rank.Jack));
 		cards.add(new Card(Suite.Heart, Rank.Queen));
 		cards.add(new Card(Suite.Heart, Rank.King));
 		cards.add(new Card(Suite.Heart, Rank.Ace));
-		cards.add(new Card(Suite.Club, Rank.8));
-		cards.add(new Card(Suite.Club, Rank.9));
-		cards.add(new Card(Suite.Club, Rank.10));
+		cards.add(new Card(Suite.Club, Rank.Eight));
+		cards.add(new Card(Suite.Club, Rank.Nine));
+		cards.add(new Card(Suite.Club, Rank.Ten));
 		cards.add(new Card(Suite.Club, Rank.Jack));
 		cards.add(new Card(Suite.Club, Rank.Queen));
 		cards.add(new Card(Suite.Club, Rank.King));
 		cards.add(new Card(Suite.Club, Rank.Ace));
-		cards.add(new Card(Suite.Diamond, Rank.8));
-		cards.add(new Card(Suite.Diamond, Rank.9));
-		cards.add(new Card(Suite.Diamond, Rank.10));
+		cards.add(new Card(Suite.Diamond, Rank.Eight));
+		cards.add(new Card(Suite.Diamond, Rank.Nine));
+		cards.add(new Card(Suite.Diamond, Rank.Ten));
 		cards.add(new Card(Suite.Diamond, Rank.Jack));
 		cards.add(new Card(Suite.Diamond, Rank.Queen));
 		cards.add(new Card(Suite.Diamond, Rank.King));
@@ -79,7 +79,7 @@ class Deck
 			}
 			else
 			{
-				tempcards.add(cards.remove(cards.size - 1));
+				tempcards.add(cards.remove(cards.size() - 1));
 			}
 		}
 
@@ -109,12 +109,12 @@ class Card
 	}
 }
 
-public enum Suite
+enum Suite
 {
-	Space, Heart, Club, Diamond
+	Spade, Heart, Club, Diamond
 }
 
-public enum Rank
+enum Rank
 {
-	7, 8, 9, 10, Jack, Queen, King, Ace
+	Seven, Eight, Nine, Ten, Jack, Queen, King, Ace
 }
