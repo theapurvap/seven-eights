@@ -2,20 +2,20 @@
 // CS 6364 - 002
 // Final Project
 
-import java.lang.*;
 import java.util.*;
 
 public class SevenEights
 {
-    private Deck deck;
-    private Suite masterSuite;
-    private ArrayList<Pair> pairs;
+    private final Deck deck;
+    private final Suite masterSuite;
+    private final ArrayList<Pair> pairs;
+    private final Player player;
+    private final AI ai;
 
     public static void main(String[] args)
     {
-        System.out.println("Hi!");
-        
         SevenEights game = new SevenEights();
+        game.game();
     }
 
     public SevenEights()
@@ -23,11 +23,115 @@ public class SevenEights
         deck = new Deck();
         masterSuite = Suite.values()[(int) (Math.random() * Suite.values().length)];
         pairs = new ArrayList<>();
+        player = new Player(masterSuite);
+        ai = new AI(masterSuite);
+        
+        for(int i = 0; i < 5; i++)
+        {
+            player.deal(deck.draw());
+            ai.deal(deck.draw());
+        }
+        
+        System.out.println("-------------------------------");
+        System.out.println("|                             |");
+        System.out.println("|   S E V E N - E I G H T S   |");
+        System.out.println("|                             |");
+        System.out.println("-------------------------------");
+        System.out.println();
+        System.out.println("Master Suite: " + masterSuite);
+        System.out.println();        
     }
 
     public void game()
     {
-        // TODO
+        double coinToss = Math.random();
+        
+        if(coinToss < 0.5)
+        {
+            System.out.println("Player goes first!");
+            
+            Card playerCard = player.move();
+            player.deal(deck.draw());
+            Card aiCard = ai.secondMove(playerCard);
+            ai.deal(deck.draw());
+            pairs.add(new Pair(true, masterSuite, playerCard, aiCard));
+            
+        }
+        else
+        {
+            System.out.println("AI goes first!");
+            
+            Card aiCard = ai.firstMove();
+            ai.deal(deck.draw());
+            Card playerCard = player.move();
+            player.deal(deck.draw());
+            ai.firstMoveResult(playerCard);
+            pairs.add(new Pair(false, masterSuite, playerCard, aiCard));
+        }
+        
+        boolean end = false;
+        
+        while(!end)
+        {
+            System.out.println("Master suite: " + masterSuite);
+            
+            if(pairs.get(pairs.size() - 1).playerWin())
+            {
+                System.out.println("Player's turn.");
+                
+                Card playerCard = player.move();
+                player.deal(deck.draw());
+                Card aiCard = ai.secondMove(playerCard);
+                ai.deal(deck.draw());
+                pairs.add(new Pair(true, masterSuite, playerCard, aiCard));
+            }
+            else
+            {
+                System.out.println("AI's turn.");
+                
+                Card aiCard = ai.firstMove();
+                ai.deal(deck.draw());
+                Card playerCard = player.move();
+                player.deal(deck.draw());
+                ai.firstMoveResult(playerCard);
+                pairs.add(new Pair(false, masterSuite, playerCard, aiCard));
+            }
+            
+            if(pairs.size() >= 15)
+            {
+                end = true;
+            }
+        }
+        
+        int playerScore = 0;
+        int aiScore = 0;
+        
+        for(int i = 0; i < pairs.size(); i++)
+        {
+            if(pairs.get(i).playerWin())
+            {
+                playerScore++;
+            }
+            else
+            {
+                aiScore++;
+            }
+        }
+        
+        System.out.println("GAME OVER!");
+        System.out.println();
+        System.out.println("Player score: " + playerScore);
+        System.out.println("AI score: " + aiScore);
+        System.out.println();
+        
+        if(playerScore > aiScore)
+        {
+            System.out.println("Player wins!!!");
+        }
+        else
+        {
+            System.out.println("AI wins!!!");
+        }
     }
 }
 
@@ -41,18 +145,39 @@ class Player
         this.masterSuite = masterSuite;
         hand = new ArrayList<>();
     }
+    
+    public void deal(Card card)
+    {
+        if(card != null)
+        {
+            hand.add(card);
+        }
+    }
+    
+    public Card move()
+    {
+        System.out.print("Player hand:");
+        for(Card card : hand)
+        {
+            System.out.print(" " + card.toString());
+        }
+        System.out.println();
+        
+        return null;
+    }
 }
 
 class AI
 {
-    private Suite masterSuite;
-    private ArrayList<Card> hand;
+    private final Suite masterSuite;
+    private final ArrayList<Card> hand;
     private ArrayList<Card> possibleOpponentCards;
     
     public AI(Suite masterSuite)
     {
         this.masterSuite = masterSuite;
         hand = new ArrayList<>();
+        possibleOpponentCards = new ArrayList<>();
         
         possibleOpponentCards.add(new Card(Suite.Spade, Rank.Seven));
         possibleOpponentCards.add(new Card(Suite.Spade, Rank.Eight));
@@ -88,59 +213,153 @@ class AI
     
     public void deal(Card card)
     {
-        UpdatePossibleOpponentCards(card);
-        hand.add(card);
+        if(card != null)
+        {
+            updatePossibleOpponentCards(card);
+            hand.add(card);
+        }
     }
     
     public Card firstMove()
     {
+        ArrayList<Double> scores = new ArrayList<>();
         
+        for(Card card : hand)
+        {
+            int possibleWins = 0;
+            
+            for(Card opponentCard : possibleOpponentCards)
+            {
+                if(card.beats(masterSuite, opponentCard))
+                {
+                    possibleWins++;
+                }
+            }
+            
+            double rank = ((double) possibleWins) / ((double) (card.rank.ordinal() + 1));
+            
+            if(card.suite == masterSuite)
+            {
+                rank *= 0.5;
+            }
+            
+            scores.add(rank);
+        }
+        
+        double best = -1.0;
+        int index = -1;
+        for(int i = 0; i < scores.size(); i++)
+        {
+            if(best < scores.get(i))
+            {
+                best = scores.get(i);
+                index = i;
+            }
+        }
+        
+        System.out.println("AI played " + hand.get(index).toString() + ".");
+        return hand.remove(index);
     }
     
     public void firstMoveResult(Card opponentCard)
     {
-        UpdatePossibleOpponentCards(opponentCard);
+        updatePossibleOpponentCards(opponentCard);
     }
     
     public Card secondMove(Card opponentCard)
     {
-        UpdatePossibleOpponentCards(opponentCard);        
+        updatePossibleOpponentCards(opponentCard);  
+        
+        ArrayList<Card> strong = new ArrayList<>();
+        ArrayList<Card> weak = new ArrayList<>();
+
+        for(Card card : hand)
+        {
+            if(card.suite == opponentCard.suite)
+            {
+                strong.add(card);
+            }
+            else
+            {
+                weak.add(card);
+            }
+        }
+        
+        if(strong.size() > 0)
+        {
+            ArrayList<Double> scores = new ArrayList<>();
+            
+            for(Card card : strong)
+            {
+                double rank;
+                
+                if(card.beats(masterSuite, opponentCard))
+                {
+                    rank = (double) (Rank.values().length - card.rank.ordinal());
+                }
+                else
+                {
+                    rank = (double) ((card.rank.ordinal() + 1) * -1);
+                }
+                
+                scores.add(rank);
+            }
+            
+            double best = -1 * Rank.values().length;
+            int index = -1;
+            for(int i = 0; i < scores.size(); i++)
+            {
+                if(best < scores.get(i))
+                {
+                    best = scores.get(i);
+                    index = i;
+                }
+            }
+            
+            System.out.println("AI played " + hand.get(hand.indexOf(strong.get(index))).toString() + ".");
+            return hand.remove(hand.indexOf(strong.get(index)));
+        }
+        else
+        {
+            ArrayList<Double> scores = new ArrayList<>();
+            
+            for(Card card : weak)
+            {
+                double rank = (double) (Rank.values().length - card.rank.ordinal());
+                
+                if(card.suite == masterSuite)
+                {
+                    rank *= 0.5;
+                }
+                
+                scores.add(rank);
+            }
+            
+            double best = -1.0;
+            int index = -1;
+            for(int i = 0; i < scores.size(); i++)
+            {
+                if(best < scores.get(i))
+                {
+                    best = scores.get(i);
+                    index = i;
+                }
+            }
+            
+            System.out.println("AI played " + hand.get(hand.indexOf(weak.get(index))).toString() + ".");
+            return hand.remove(hand.indexOf(weak.get(index)));
+        }
     }
     
-    private void UpdatePossibleOpponentCards(Card card)
+    private void updatePossibleOpponentCards(Card card)
     {
         for(int i = 0; i < possibleOpponentCards.size(); i++)
         {
-            if(possibleOpponentCards.get(i).suite == card.suite && possibleOpponentCards.get(i).rank == card.rank)
+            if(possibleOpponentCards.get(i).equals(card))
             {
                 possibleOpponentCards.remove(i);
             }
         }
-    }
-    
-    private double firstMoveCalculation(Card card)
-    {
-        int possiblePairs = 0;
-        
-        for(int i = 0; i < possibleOpponentCards.size(); i++)
-        {
-            if(card.suite == masterSuite && possibleOpponentCards.get(i).suite != masterSuite)
-            {
-                possiblePairs++;
-            }
-            else
-            {
-                if(card.suite != masterSuite && possibleOpponentCards.get(i).suite == masterSuite)
-                {
-                    return card.rank.ordinal() > possibleOpponentCards.get(i).rank.ordinal();
-                }
-            }
-        }
-    }
-    
-    private double SecondMoveCalculation(Card opponentCard)
-    {
-        
     }
 }
 
@@ -221,6 +440,39 @@ class Card
         this.suite = suite;
         this.rank = rank;
     }
+    
+    public boolean equals(Card card)
+    {
+        return this.suite == card.suite && this.rank == card.rank;
+    }
+    
+    public String toString()
+    {
+        return "[" + rank + " of " + suite + "]";
+    }
+    
+    public boolean beats(Suite masterSuite, Card card)
+    {
+        if(this.suite == masterSuite && card.suite != masterSuite)
+        {
+            return true;
+        }
+        else if(this.suite != masterSuite && card.suite == masterSuite)
+        {
+            return false;
+        }
+        else
+        {
+            if(this.suite == card.suite)
+            {
+                return this.rank.ordinal() > card.rank.ordinal();
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
 }
 
 class Pair
@@ -236,28 +488,28 @@ class Pair
         this.masterSuite = masterSuite;
         this.playerCard = playerCard;
         this.aiCard = aiCard;
+        
+        System.out.println();
+        if(playerWin())
+        {
+            System.out.println("Player wins the pair!");
+        }
+        else
+        {
+            System.out.println("AI wins the pair!");
+        }
+        System.out.println();
     }
     
     public boolean playerWin()
     {
-        if(playerCard.suite == masterSuite && aiCard.suite != masterSuite)
+        if(playerMove)
         {
-            return true;
-        }
-        else if(playerCard.suite != masterSuite && aiCard.suite == masterSuite)
-        {
-            return false;
+            return playerCard.beats(masterSuite, aiCard);
         }
         else
         {
-            if(playerCard.suite == aiCard.suite)
-            {
-                return playerCard.rank.ordinal() > aiCard.rank.ordinal();
-            }
-            else
-            {
-                return playerMove;
-            }
+            return aiCard.beats(masterSuite, playerCard);
         }
     }
 }
