@@ -74,6 +74,7 @@ public class SevenEights
         while(!end)
         {
             System.out.println("Master suite: " + masterSuite);
+            System.out.println();
             
             if(pairs.get(pairs.size() - 1).playerWin())
             {
@@ -155,15 +156,18 @@ class Player
     }
     
     public Card move()
-    {
+    {      
         System.out.print("Player hand:");
-        for(Card card : hand)
+        for(int i = 0; i < hand.size(); i++)
         {
-            System.out.print(" " + card.toString());
+            System.out.print(" (" + (i + 1) + ") " + hand.get(i).toString());
         }
         System.out.println();
+        System.out.print("Player move (enter card number): ");
         
-        return null;
+        int playerPick = new Scanner(System.in).nextInt() - 1;
+        
+        return hand.remove(playerPick);
     }
 }
 
@@ -509,7 +513,7 @@ class Pair
         }
         else
         {
-            return aiCard.beats(masterSuite, playerCard);
+            return !aiCard.beats(masterSuite, playerCard);
         }
     }
 }
