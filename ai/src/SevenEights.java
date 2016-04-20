@@ -50,7 +50,7 @@ public class SevenEights
         {
             System.out.println("Player goes first!");
             
-            Card playerCard = player.move();
+            Card playerCard = player.firstMove();
             player.deal(deck.draw());
             Card aiCard = ai.secondMove(playerCard);
             ai.deal(deck.draw());
@@ -63,7 +63,7 @@ public class SevenEights
             
             Card aiCard = ai.firstMove();
             ai.deal(deck.draw());
-            Card playerCard = player.move();
+            Card playerCard = player.secondMove(aiCard);
             player.deal(deck.draw());
             ai.firstMoveResult(playerCard);
             pairs.add(new Pair(false, masterSuite, playerCard, aiCard));
@@ -80,7 +80,7 @@ public class SevenEights
             {
                 System.out.println("Player's turn.");
                 
-                Card playerCard = player.move();
+                Card playerCard = player.firstMove();
                 player.deal(deck.draw());
                 Card aiCard = ai.secondMove(playerCard);
                 ai.deal(deck.draw());
@@ -92,7 +92,7 @@ public class SevenEights
                 
                 Card aiCard = ai.firstMove();
                 ai.deal(deck.draw());
-                Card playerCard = player.move();
+                Card playerCard = player.secondMove(aiCard);
                 player.deal(deck.draw());
                 ai.firstMoveResult(playerCard);
                 pairs.add(new Pair(false, masterSuite, playerCard, aiCard));
@@ -155,7 +155,7 @@ class Player
         }
     }
     
-    public Card move()
+    public Card firstMove()
     {      
         System.out.print("Player hand:");
         for(int i = 0; i < hand.size(); i++)
@@ -166,6 +166,44 @@ class Player
         System.out.print("Player move (enter card number): ");
         
         int playerPick = new Scanner(System.in).nextInt() - 1;
+        
+        return hand.remove(playerPick);
+    }
+    
+    public Card secondMove(Card opponentCard)
+    {      
+        System.out.print("Player hand:");
+        for(int i = 0; i < hand.size(); i++)
+        {
+            System.out.print(" (" + (i + 1) + ") " + hand.get(i).toString());
+        }
+        System.out.println();
+        
+        int playerPick;
+        do
+        {
+            System.out.print("Player move (enter card number): ");
+            playerPick = new Scanner(System.in).nextInt() - 1;
+            
+            ArrayList<Card> allowedCards = new ArrayList<>();
+            for(Card card : hand)
+            {
+                if(opponentCard.suite == card.suite)
+                {
+                    allowedCards.add(card);
+                }
+            }
+            
+            if(allowedCards.size() > 0)
+            {
+                if(!allowedCards.contains(hand.get(playerPick)))
+                {
+                    playerPick = -1;
+                    System.out.println("Invalid move! You have " + allowedCards.size() + " card(s) with the same suite as the card played by the opponent.");
+                }
+            }
+        }
+        while(playerPick < 0);
         
         return hand.remove(playerPick);
     }
