@@ -443,20 +443,39 @@ class Deck
         cards.add(new Card(Suite.Diamond, Rank.Queen));
         cards.add(new Card(Suite.Diamond, Rank.King));
         cards.add(new Card(Suite.Diamond, Rank.Ace));
-
+        
         shuffle();
     }
-
+    
     private void shuffle()
     {
-        ArrayList<Card> tempcards = new ArrayList<>();
-
-        while(cards.size() > 0)
+        ArrayList<int[]> sortTable = new ArrayList<>();
+        
+        for(int i = 0; i < 30; i++)
         {
-            tempcards.add(cards.remove((int) (Math.random() * cards.size())));
+            int[] sortEntry = {i, (int) Math.pow(Math.random() * cards.size(), 2)};
+            sortTable.add(sortEntry);
         }
-
-        cards = tempcards;
+        
+        for(int i = 0; i < cards.size(); i++)
+        {
+            for(int j = 1; j < cards.size(); j++)
+            {
+                if(sortTable.get(j)[1] < sortTable.get(j - 1)[1])
+                {
+                    int[] tempEntry = sortTable.get(j);
+                    sortTable.set(j, sortTable.get(j - 1));
+                    sortTable.set(j - 1, tempEntry);
+                }
+            }
+        }
+        
+        ArrayList<Card> tempCards = cards;
+        cards = new ArrayList<>();
+        for(int[] sortEntry : sortTable)
+        {
+            cards.add(tempCards.get(sortEntry[0]));
+        }
     }
     
     public Card draw()
