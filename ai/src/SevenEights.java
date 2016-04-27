@@ -7,7 +7,7 @@ import java.util.*;
 public class SevenEights
 {
     private final Deck deck;
-    private final Suite masterSuite;
+    private final Suit masterSuit;
     private final ArrayList<Pair> pairs;
     private final Player player;
     private final AI ai;
@@ -21,10 +21,10 @@ public class SevenEights
     public SevenEights()
     {
         deck = new Deck();
-        masterSuite = Suite.values()[(int) (Math.random() * Suite.values().length)];
+        masterSuit = Suit.values()[(int) (Math.random() * Suit.values().length)];
         pairs = new ArrayList<>();
-        player = new Player(masterSuite);
-        ai = new AI(masterSuite);
+        player = new Player(masterSuit);
+        ai = new AI(masterSuit);
         
         for(int i = 0; i < 5; i++)
         {
@@ -38,7 +38,7 @@ public class SevenEights
         System.out.println("|                             |");
         System.out.println("-------------------------------");
         System.out.println();
-        System.out.println("Master Suite: " + masterSuite);
+        System.out.println("Master Suit: " + masterSuit);
         System.out.println();        
     }
 
@@ -54,7 +54,7 @@ public class SevenEights
             player.deal(deck.draw());
             Card aiCard = ai.secondMove(playerCard);
             ai.deal(deck.draw());
-            pairs.add(new Pair(true, masterSuite, playerCard, aiCard));
+            pairs.add(new Pair(true, masterSuit, playerCard, aiCard));
             
         }
         else
@@ -66,14 +66,14 @@ public class SevenEights
             Card playerCard = player.secondMove(aiCard);
             player.deal(deck.draw());
             ai.firstMoveResult(playerCard);
-            pairs.add(new Pair(false, masterSuite, playerCard, aiCard));
+            pairs.add(new Pair(false, masterSuit, playerCard, aiCard));
         }
         
         boolean end = false;
         
         while(!end)
         {
-            System.out.println("Master suite: " + masterSuite);
+            System.out.println("Master suit: " + masterSuit);
             System.out.println();
             
             if(pairs.get(pairs.size() - 1).playerWin())
@@ -84,7 +84,7 @@ public class SevenEights
                 player.deal(deck.draw());
                 Card aiCard = ai.secondMove(playerCard);
                 ai.deal(deck.draw());
-                pairs.add(new Pair(true, masterSuite, playerCard, aiCard));
+                pairs.add(new Pair(true, masterSuit, playerCard, aiCard));
             }
             else
             {
@@ -95,7 +95,7 @@ public class SevenEights
                 Card playerCard = player.secondMove(aiCard);
                 player.deal(deck.draw());
                 ai.firstMoveResult(playerCard);
-                pairs.add(new Pair(false, masterSuite, playerCard, aiCard));
+                pairs.add(new Pair(false, masterSuit, playerCard, aiCard));
             }
             
             if(pairs.size() >= 15)
@@ -138,12 +138,12 @@ public class SevenEights
 
 class Player
 {
-    private Suite masterSuite;
+    private Suit masterSuit;
     private ArrayList<Card> hand;
     
-    public Player(Suite masterSuite)
+    public Player(Suit masterSuit)
     {
-        this.masterSuite = masterSuite;
+        this.masterSuit = masterSuit;
         hand = new ArrayList<>();
     }
     
@@ -188,7 +188,7 @@ class Player
             ArrayList<Card> allowedCards = new ArrayList<>();
             for(Card card : hand)
             {
-                if(opponentCard.suite == card.suite)
+                if(opponentCard.suit == card.suit)
                 {
                     allowedCards.add(card);
                 }
@@ -199,7 +199,7 @@ class Player
                 if(!allowedCards.contains(hand.get(playerPick)))
                 {
                     playerPick = -1;
-                    System.out.println("Invalid move! You have " + allowedCards.size() + " card(s) with the same suite as the card played by the opponent.");
+                    System.out.println("Invalid move! You have " + allowedCards.size() + " card(s) with the same suit as the card played by the opponent.");
                 }
             }
         }
@@ -211,46 +211,46 @@ class Player
 
 class AI
 {
-    private final Suite masterSuite;
+    private final Suit masterSuit;
     private final ArrayList<Card> hand;
     private ArrayList<Card> possibleOpponentCards;
     
-    public AI(Suite masterSuite)
+    public AI(Suit masterSuit)
     {
-        this.masterSuite = masterSuite;
+        this.masterSuit = masterSuit;
         hand = new ArrayList<>();
         possibleOpponentCards = new ArrayList<>();
         
-        possibleOpponentCards.add(new Card(Suite.Spade, Rank.Seven));
-        possibleOpponentCards.add(new Card(Suite.Spade, Rank.Eight));
-        possibleOpponentCards.add(new Card(Suite.Spade, Rank.Nine));
-        possibleOpponentCards.add(new Card(Suite.Spade, Rank.Ten));
-        possibleOpponentCards.add(new Card(Suite.Spade, Rank.Jack));
-        possibleOpponentCards.add(new Card(Suite.Spade, Rank.Queen));
-        possibleOpponentCards.add(new Card(Suite.Spade, Rank.King));
-        possibleOpponentCards.add(new Card(Suite.Spade, Rank.Ace));
-        possibleOpponentCards.add(new Card(Suite.Heart, Rank.Seven));
-        possibleOpponentCards.add(new Card(Suite.Heart, Rank.Eight));
-        possibleOpponentCards.add(new Card(Suite.Heart, Rank.Nine));
-        possibleOpponentCards.add(new Card(Suite.Heart, Rank.Ten));
-        possibleOpponentCards.add(new Card(Suite.Heart, Rank.Jack));
-        possibleOpponentCards.add(new Card(Suite.Heart, Rank.Queen));
-        possibleOpponentCards.add(new Card(Suite.Heart, Rank.King));
-        possibleOpponentCards.add(new Card(Suite.Heart, Rank.Ace));
-        possibleOpponentCards.add(new Card(Suite.Club, Rank.Eight));
-        possibleOpponentCards.add(new Card(Suite.Club, Rank.Nine));
-        possibleOpponentCards.add(new Card(Suite.Club, Rank.Ten));
-        possibleOpponentCards.add(new Card(Suite.Club, Rank.Jack));
-        possibleOpponentCards.add(new Card(Suite.Club, Rank.Queen));
-        possibleOpponentCards.add(new Card(Suite.Club, Rank.King));
-        possibleOpponentCards.add(new Card(Suite.Club, Rank.Ace));
-        possibleOpponentCards.add(new Card(Suite.Diamond, Rank.Eight));
-        possibleOpponentCards.add(new Card(Suite.Diamond, Rank.Nine));
-        possibleOpponentCards.add(new Card(Suite.Diamond, Rank.Ten));
-        possibleOpponentCards.add(new Card(Suite.Diamond, Rank.Jack));
-        possibleOpponentCards.add(new Card(Suite.Diamond, Rank.Queen));
-        possibleOpponentCards.add(new Card(Suite.Diamond, Rank.King));
-        possibleOpponentCards.add(new Card(Suite.Diamond, Rank.Ace));
+        possibleOpponentCards.add(new Card(Suit.Spade, Rank.Seven));
+        possibleOpponentCards.add(new Card(Suit.Spade, Rank.Eight));
+        possibleOpponentCards.add(new Card(Suit.Spade, Rank.Nine));
+        possibleOpponentCards.add(new Card(Suit.Spade, Rank.Ten));
+        possibleOpponentCards.add(new Card(Suit.Spade, Rank.Jack));
+        possibleOpponentCards.add(new Card(Suit.Spade, Rank.Queen));
+        possibleOpponentCards.add(new Card(Suit.Spade, Rank.King));
+        possibleOpponentCards.add(new Card(Suit.Spade, Rank.Ace));
+        possibleOpponentCards.add(new Card(Suit.Heart, Rank.Seven));
+        possibleOpponentCards.add(new Card(Suit.Heart, Rank.Eight));
+        possibleOpponentCards.add(new Card(Suit.Heart, Rank.Nine));
+        possibleOpponentCards.add(new Card(Suit.Heart, Rank.Ten));
+        possibleOpponentCards.add(new Card(Suit.Heart, Rank.Jack));
+        possibleOpponentCards.add(new Card(Suit.Heart, Rank.Queen));
+        possibleOpponentCards.add(new Card(Suit.Heart, Rank.King));
+        possibleOpponentCards.add(new Card(Suit.Heart, Rank.Ace));
+        possibleOpponentCards.add(new Card(Suit.Club, Rank.Eight));
+        possibleOpponentCards.add(new Card(Suit.Club, Rank.Nine));
+        possibleOpponentCards.add(new Card(Suit.Club, Rank.Ten));
+        possibleOpponentCards.add(new Card(Suit.Club, Rank.Jack));
+        possibleOpponentCards.add(new Card(Suit.Club, Rank.Queen));
+        possibleOpponentCards.add(new Card(Suit.Club, Rank.King));
+        possibleOpponentCards.add(new Card(Suit.Club, Rank.Ace));
+        possibleOpponentCards.add(new Card(Suit.Diamond, Rank.Eight));
+        possibleOpponentCards.add(new Card(Suit.Diamond, Rank.Nine));
+        possibleOpponentCards.add(new Card(Suit.Diamond, Rank.Ten));
+        possibleOpponentCards.add(new Card(Suit.Diamond, Rank.Jack));
+        possibleOpponentCards.add(new Card(Suit.Diamond, Rank.Queen));
+        possibleOpponentCards.add(new Card(Suit.Diamond, Rank.King));
+        possibleOpponentCards.add(new Card(Suit.Diamond, Rank.Ace));
     }
     
     public void deal(Card card)
@@ -272,7 +272,7 @@ class AI
             
             for(Card opponentCard : possibleOpponentCards)
             {
-                if(card.beats(masterSuite, opponentCard))
+                if(card.beats(masterSuit, opponentCard))
                 {
                     possibleWins++;
                 }
@@ -280,7 +280,7 @@ class AI
             
             double rank = ((double) possibleWins) / ((double) (card.rank.ordinal() + 1));
             
-            if(card.suite == masterSuite)
+            if(card.suit == masterSuit)
             {
                 rank *= 0.5;
             }
@@ -320,7 +320,7 @@ class AI
 
         for(Card card : hand)
         {
-            if(card.suite == opponentCard.suite)
+            if(card.suit == opponentCard.suit)
             {
                 strong.add(card);
             }
@@ -338,7 +338,7 @@ class AI
             {
                 double rank;
                 
-                if(card.beats(masterSuite, opponentCard))
+                if(card.beats(masterSuit, opponentCard))
                 {
                     rank = (double) (Rank.values().length - card.rank.ordinal());
                 }
@@ -375,7 +375,7 @@ class AI
             {
                 double rank = (double) (Rank.values().length - card.rank.ordinal());
                 
-                if(card.suite == masterSuite)
+                if(card.suit == masterSuit)
                 {
                     rank *= 0.5;
                 }
@@ -422,36 +422,36 @@ class Deck
     {
         cards = new ArrayList<>();
 
-        cards.add(new Card(Suite.Spade, Rank.Seven));
-        cards.add(new Card(Suite.Spade, Rank.Eight));
-        cards.add(new Card(Suite.Spade, Rank.Nine));
-        cards.add(new Card(Suite.Spade, Rank.Ten));
-        cards.add(new Card(Suite.Spade, Rank.Jack));
-        cards.add(new Card(Suite.Spade, Rank.Queen));
-        cards.add(new Card(Suite.Spade, Rank.King));
-        cards.add(new Card(Suite.Spade, Rank.Ace));
-        cards.add(new Card(Suite.Heart, Rank.Seven));
-        cards.add(new Card(Suite.Heart, Rank.Eight));
-        cards.add(new Card(Suite.Heart, Rank.Nine));
-        cards.add(new Card(Suite.Heart, Rank.Ten));
-        cards.add(new Card(Suite.Heart, Rank.Jack));
-        cards.add(new Card(Suite.Heart, Rank.Queen));
-        cards.add(new Card(Suite.Heart, Rank.King));
-        cards.add(new Card(Suite.Heart, Rank.Ace));
-        cards.add(new Card(Suite.Club, Rank.Eight));
-        cards.add(new Card(Suite.Club, Rank.Nine));
-        cards.add(new Card(Suite.Club, Rank.Ten));
-        cards.add(new Card(Suite.Club, Rank.Jack));
-        cards.add(new Card(Suite.Club, Rank.Queen));
-        cards.add(new Card(Suite.Club, Rank.King));
-        cards.add(new Card(Suite.Club, Rank.Ace));
-        cards.add(new Card(Suite.Diamond, Rank.Eight));
-        cards.add(new Card(Suite.Diamond, Rank.Nine));
-        cards.add(new Card(Suite.Diamond, Rank.Ten));
-        cards.add(new Card(Suite.Diamond, Rank.Jack));
-        cards.add(new Card(Suite.Diamond, Rank.Queen));
-        cards.add(new Card(Suite.Diamond, Rank.King));
-        cards.add(new Card(Suite.Diamond, Rank.Ace));
+        cards.add(new Card(Suit.Spade, Rank.Seven));
+        cards.add(new Card(Suit.Spade, Rank.Eight));
+        cards.add(new Card(Suit.Spade, Rank.Nine));
+        cards.add(new Card(Suit.Spade, Rank.Ten));
+        cards.add(new Card(Suit.Spade, Rank.Jack));
+        cards.add(new Card(Suit.Spade, Rank.Queen));
+        cards.add(new Card(Suit.Spade, Rank.King));
+        cards.add(new Card(Suit.Spade, Rank.Ace));
+        cards.add(new Card(Suit.Heart, Rank.Seven));
+        cards.add(new Card(Suit.Heart, Rank.Eight));
+        cards.add(new Card(Suit.Heart, Rank.Nine));
+        cards.add(new Card(Suit.Heart, Rank.Ten));
+        cards.add(new Card(Suit.Heart, Rank.Jack));
+        cards.add(new Card(Suit.Heart, Rank.Queen));
+        cards.add(new Card(Suit.Heart, Rank.King));
+        cards.add(new Card(Suit.Heart, Rank.Ace));
+        cards.add(new Card(Suit.Club, Rank.Eight));
+        cards.add(new Card(Suit.Club, Rank.Nine));
+        cards.add(new Card(Suit.Club, Rank.Ten));
+        cards.add(new Card(Suit.Club, Rank.Jack));
+        cards.add(new Card(Suit.Club, Rank.Queen));
+        cards.add(new Card(Suit.Club, Rank.King));
+        cards.add(new Card(Suit.Club, Rank.Ace));
+        cards.add(new Card(Suit.Diamond, Rank.Eight));
+        cards.add(new Card(Suit.Diamond, Rank.Nine));
+        cards.add(new Card(Suit.Diamond, Rank.Ten));
+        cards.add(new Card(Suit.Diamond, Rank.Jack));
+        cards.add(new Card(Suit.Diamond, Rank.Queen));
+        cards.add(new Card(Suit.Diamond, Rank.King));
+        cards.add(new Card(Suit.Diamond, Rank.Ace));
         
         shuffle();
     }
@@ -502,38 +502,38 @@ class Deck
 
 class Card
 {
-    public final Suite suite;
+    public final Suit suit;
     public final Rank rank;
 
-    public Card(Suite suite, Rank rank)
+    public Card(Suit suit, Rank rank)
     {
-        this.suite = suite;
+        this.suit = suit;
         this.rank = rank;
     }
     
     public boolean equals(Card card)
     {
-        return this.suite == card.suite && this.rank == card.rank;
+        return this.suit == card.suit && this.rank == card.rank;
     }
     
     public String toString()
     {
-        return "[" + rank + " of " + suite + "]";
+        return "[" + rank + " of " + suit + "]";
     }
     
-    public boolean beats(Suite masterSuite, Card card)
+    public boolean beats(Suit masterSuit, Card card)
     {
-        if(this.suite == masterSuite && card.suite != masterSuite)
+        if(this.suit == masterSuit && card.suit != masterSuit)
         {
             return true;
         }
-        else if(this.suite != masterSuite && card.suite == masterSuite)
+        else if(this.suit != masterSuit && card.suit == masterSuit)
         {
             return false;
         }
         else
         {
-            if(this.suite == card.suite)
+            if(this.suit == card.suit)
             {
                 return this.rank.ordinal() > card.rank.ordinal();
             }
@@ -548,14 +548,14 @@ class Card
 class Pair
 {
     private final Boolean playerMove;
-    private final Suite masterSuite;
+    private final Suit masterSuit;
     private final Card playerCard;
     private final Card aiCard;
     
-    public Pair(Boolean playerMove, Suite masterSuite, Card playerCard, Card aiCard)
+    public Pair(Boolean playerMove, Suit masterSuit, Card playerCard, Card aiCard)
     {
         this.playerMove = playerMove;
-        this.masterSuite = masterSuite;
+        this.masterSuit = masterSuit;
         this.playerCard = playerCard;
         this.aiCard = aiCard;
         
@@ -575,16 +575,16 @@ class Pair
     {
         if(playerMove)
         {
-            return playerCard.beats(masterSuite, aiCard);
+            return playerCard.beats(masterSuit, aiCard);
         }
         else
         {
-            return !aiCard.beats(masterSuite, playerCard);
+            return !aiCard.beats(masterSuit, playerCard);
         }
     }
 }
 
-enum Suite
+enum Suit
 {
     Spade, Heart, Club, Diamond
 }
