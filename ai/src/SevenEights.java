@@ -286,6 +286,9 @@ class AI
             }
             
             scores.add(rank);
+            
+            // print heuristics
+            //System.out.println(card.toString() + " " + rank);
         }
         
         double best = -1.0;
@@ -345,6 +348,9 @@ class AI
                 }
                 
                 scores.add(rank);
+                
+                // print heuristics
+                //System.out.println(card.toString() + " " + rank);
             }
             
             double best = -1 * Rank.values().length;
@@ -375,6 +381,9 @@ class AI
                 }
                 
                 scores.add(rank);
+                
+                // print heuristics
+                //System.out.println(card.toString() + " " + rank);
             }
             
             double best = -1.0;
